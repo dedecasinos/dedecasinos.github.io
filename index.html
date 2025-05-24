@@ -5,71 +5,89 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Lucro Simples - Dr Dedé</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background-color: #1b1b1b;
       margin: 0;
-      padding: 20px;
-      color: #f0f0f0;
+      font-family: 'Orbitron', sans-serif;
+      background: url('https://i.imgur.com/GJ1xWTc.jpg') repeat;
+      color: #fff;
     }
     .container {
-      max-width: 500px;
-      margin: auto;
-      background: #2c2c2c;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 0 15px rgba(255,215,0,0.2);
+      max-width: 700px;
+      margin: 30px auto;
+      background: rgba(0, 0, 0, 0.85);
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+      animation: fadeIn 1.5s ease-in-out;
     }
     h1 {
       text-align: center;
       color: #ffd700;
+      margin-bottom: 30px;
+      text-shadow: 1px 1px 3px #000;
     }
-    label, select, input {
-      display: block;
+    label, input, select {
       width: 100%;
-      margin-bottom: 10px;
-      color: #f0f0f0;
+      margin-bottom: 15px;
+      font-size: 16px;
     }
     input, select {
-      padding: 8px;
-      border: 1px solid #555;
+      padding: 10px;
+      border: none;
       border-radius: 6px;
-      background-color: #3c3c3c;
+      background-color: #333;
       color: #fff;
     }
     button {
       width: 100%;
-      padding: 10px;
-      background-color: #ff0000;
-      color: white;
+      padding: 12px;
+      background-color: #e60000;
       border: none;
       border-radius: 6px;
-      cursor: pointer;
+      color: white;
       font-size: 16px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    button:hover {
+      background-color: #ff1a1a;
     }
     .result {
+      background: #222;
+      border-radius: 10px;
+      padding: 15px;
       margin-top: 20px;
-      padding: 10px;
-      background: #3a3a3a;
-      border-radius: 8px;
-      color: #fff;
+      font-size: 15px;
+    }
+    .section {
+      margin-top: 40px;
+    }
+    canvas {
+      margin-top: 20px;
+      background: #fff;
+      border-radius: 10px;
     }
     footer {
-      margin-top: 30px;
+      margin-top: 40px;
       text-align: center;
-      font-size: 14px;
-      color: #999;
+      font-size: 13px;
+      color: #ccc;
     }
     a.telegram {
-      display: inline-block;
-      margin-top: 10px;
-      padding: 10px 15px;
-      background-color: #0088cc;
-      color: white;
-      border-radius: 6px;
+      background: #0088cc;
+      color: #fff;
       text-decoration: none;
-      font-weight: bold;
+      padding: 10px 20px;
+      display: inline-block;
+      border-radius: 5px;
+      margin-top: 10px;
+    }
+    @keyframes fadeIn {
+      0% {opacity: 0; transform: translateY(-10px);}
+      100% {opacity: 1; transform: translateY(0);}
     }
   </style>
 </head>
@@ -91,11 +109,37 @@
     <input type="number" id="dias" placeholder="Ex: 30" />
 
     <button onclick="calcularLucro()">Calcular Lucro</button>
-
     <div class="result" id="resultado"></div>
 
+    <div class="section">
+      <h2>Simulador de Metas Diárias</h2>
+      <label for="lucroDiario">Lucro desejado por dia (R$):</label>
+      <input type="number" id="lucroDiario" placeholder="Ex: 50" />
+      <label for="diasMeta">Dias:</label>
+      <input type="number" id="diasMeta" placeholder="Ex: 30" />
+      <button onclick="simularMetas()">Simular</button>
+      <div class="result" id="metasResultado"></div>
+    </div>
+
+    <div class="section">
+      <h2>Calculadora de Martingale</h2>
+      <label for="odd">Odd:</label>
+      <input type="number" step="0.01" id="odd" placeholder="Ex: 1.90" />
+      <label for="valorInicial">Valor Inicial (R$):</label>
+      <input type="number" id="valorInicial" placeholder="Ex: 10" />
+      <label for="tentativas">Nº de tentativas:</label>
+      <input type="number" id="tentativas" placeholder="Ex: 5" />
+      <button onclick="calcularMartingale()">Calcular</button>
+      <div class="result" id="martingaleResultado"></div>
+    </div>
+
+    <div class="section">
+      <h2>Gráfico de Crescimento da Banca</h2>
+      <canvas id="grafico" width="600" height="300"></canvas>
+    </div>
+
     <footer>
-      <a href="https://t.me/+d0GXPig0sJNjZDJh" target="_blank" class="telegram">Entrar no Canal do Telegram</a>
+      <a href="https://t.me/+d0GXPig0sJNjZDJh" class="telegram" target="_blank">Canal do Telegram</a>
       <p>Use com responsabilidade. Proibido para menores de 18 anos.</p>
     </footer>
   </div>
@@ -106,22 +150,71 @@
       const estrategia = parseFloat(document.getElementById('estrategia').value);
       const dias = parseInt(document.getElementById('dias').value);
       const resultado = document.getElementById('resultado');
-
-      if (isNaN(bancaInicial) || isNaN(estrategia) || isNaN(dias)) {
-        resultado.innerHTML = '<strong>Preencha todos os campos corretamente.</strong>';
-        return;
-      }
-
-      let bancaAtual = bancaInicial;
-      let log = `<strong>Banca inicial:</strong> R$ ${bancaInicial.toFixed(2)}<br><br>`;
-
+      if (isNaN(bancaInicial) || isNaN(estrategia) || isNaN(dias)) return resultado.innerHTML = 'Preencha todos os campos corretamente.';
+      let bancaAtual = bancaInicial, log = '', data = [];
       for (let i = 1; i <= dias; i++) {
         const lucroDia = bancaAtual * estrategia;
         bancaAtual += lucroDia;
         log += `Dia ${i}: +R$ ${lucroDia.toFixed(2)} (Total: R$ ${bancaAtual.toFixed(2)})<br>`;
+        data.push(bancaAtual.toFixed(2));
       }
-
       resultado.innerHTML = log;
+      desenharGrafico(data);
+    }
+
+    function simularMetas() {
+      const lucro = parseFloat(document.getElementById('lucroDiario').value);
+      const dias = parseInt(document.getElementById('diasMeta').value);
+      const metas = document.getElementById('metasResultado');
+      if (isNaN(lucro) || isNaN(dias)) return metas.innerHTML = 'Preencha os campos corretamente.';
+      let total = 0, log = '';
+      for (let i = 1; i <= dias; i++) {
+        total += lucro;
+        log += `Dia ${i}: +R$ ${lucro.toFixed(2)} (Total acumulado: R$ ${total.toFixed(2)})<br>`;
+      }
+      metas.innerHTML = log;
+    }
+
+    function calcularMartingale() {
+      const odd = parseFloat(document.getElementById('odd').value);
+      const valorInicial = parseFloat(document.getElementById('valorInicial').value);
+      const tentativas = parseInt(document.getElementById('tentativas').value);
+      const martingale = document.getElementById('martingaleResultado');
+      if (isNaN(odd) || isNaN(valorInicial) || isNaN(tentativas)) return martingale.innerHTML = 'Preencha corretamente.';
+      let valor = valorInicial, total = 0, log = '';
+      for (let i = 1; i <= tentativas; i++) {
+        total += valor;
+        log += `Tentativa ${i}: Apostar R$ ${valor.toFixed(2)} (Total investido: R$ ${total.toFixed(2)})<br>`;
+        valor = (total + valorInicial) / (odd - 1);
+      }
+      martingale.innerHTML = log;
+    }
+
+    function desenharGrafico(data) {
+      const ctx = document.getElementById('grafico').getContext('2d');
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: data.map((_, i) => `Dia ${i+1}`),
+          datasets: [{
+            label: 'Crescimento da Banca (R$)',
+            data: data,
+            backgroundColor: 'rgba(255,215,0,0.2)',
+            borderColor: '#ffd700',
+            borderWidth: 2,
+            tension: 0.2,
+            fill: true
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: { legend: { labels: { color: '#000' } } },
+          scales: {
+            x: { ticks: { color: '#000' } },
+            y: { ticks: { color: '#000' } }
+          }
+        }
+      });
     }
   </script>
 </body>
