@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Lucro Simples - Dr Dedé</title>
+  <link href="style.css" rel="stylesheet">
+</head>
+<body>
+  <div class="overlay">
+    <header>
+      <h1>Lucro Simples -<br>Dr Dedé</h1>
+    </header>
+    <main>
+      <section>
+        <label>Valor da Banca Inicial (R$):</label>
+        <input id="banca" type="number" placeholder="Ex: 1000" />
+        <label>Escolha sua estratégia:</label>
+        <select id="estrategia">
+          <option value="1">Conservadora (1%)</option>
+          <option value="3">Moderada (3%)</option>
+          <option value="5">Agressiva (5%)</option>
+        </select>
+        <label>Quantidade de dias:</label>
+        <input id="dias" type="number" placeholder="Ex: 30" />
+        <button onclick="calcularLucro()">Calcular Lucro</button>
+        <div id="resultado"></div>
+      </section>
+      <section>
+        <h2>Simulador de Metas Diárias</h2>
+        <label>Lucro desejado por dia (R$):</label>
+        <input id="lucroMeta" type="number" placeholder="Ex: 100" />
+        <label>Stake por entrada (R$):</label>
+        <input id="stakeMeta" type="number" placeholder="Ex: 20" />
+        <label>Porcentagem média por entrada (%):</label>
+        <input id="porcentagemMeta" type="number" placeholder="Ex: 10" />
+        <button onclick="calcularMetas()">Calcular Metas</button>
+        <div id="resultadoMetas"></div>
+      </section>
+      <section>
+        <h2>Calculadora de Martingale</h2>
+        <label>Valor da primeira entrada (R$):</label>
+        <input id="entradaInicial" type="number" placeholder="Ex: 10" />
+        <label>Quantidade de tentativas:</label>
+        <input id="tentativas" type="number" placeholder="Ex: 5" />
+        <button onclick="calcularMartingale()">Calcular Martingale</button>
+        <div id="resultadoMartingale"></div>
+      </section>
+      <section>
+        <h2>Gráfico de Crescimento da Banca</h2>
+        <canvas id="grafico" width="300" height="200"></canvas>
+      </section>
+    </main>
+    <footer>
+      <p>Use com responsabilidade. Proibido para menores de 18 anos.</p>
+      <a href="https://t.me/+d0GXPig0sJNjZDJh" target="_blank">Canal no Telegram</a>
+    </footer>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
