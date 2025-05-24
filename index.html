@@ -1,0 +1,128 @@
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lucro Simples - Dr Dedé</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #1b1b1b;
+      margin: 0;
+      padding: 20px;
+      color: #f0f0f0;
+    }
+    .container {
+      max-width: 500px;
+      margin: auto;
+      background: #2c2c2c;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(255,215,0,0.2);
+    }
+    h1 {
+      text-align: center;
+      color: #ffd700;
+    }
+    label, select, input {
+      display: block;
+      width: 100%;
+      margin-bottom: 10px;
+      color: #f0f0f0;
+    }
+    input, select {
+      padding: 8px;
+      border: 1px solid #555;
+      border-radius: 6px;
+      background-color: #3c3c3c;
+      color: #fff;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #ff0000;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .result {
+      margin-top: 20px;
+      padding: 10px;
+      background: #3a3a3a;
+      border-radius: 8px;
+      color: #fff;
+    }
+    footer {
+      margin-top: 30px;
+      text-align: center;
+      font-size: 14px;
+      color: #999;
+    }
+    a.telegram {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 10px 15px;
+      background-color: #0088cc;
+      color: white;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Lucro Simples - Dr Dedé</h1>
+    <label for="banca">Valor da Banca Inicial (R$):</label>
+    <input type="number" id="banca" placeholder="Ex: 1000" />
+
+    <label for="estrategia">Escolha sua estratégia:</label>
+    <select id="estrategia">
+      <option value="0.01">Conservadora (1%)</option>
+      <option value="0.02">Segura (2%)</option>
+      <option value="0.05">Inteligente (5%)</option>
+      <option value="0.10">Ousada (10%)</option>
+    </select>
+
+    <label for="dias">Quantidade de dias:</label>
+    <input type="number" id="dias" placeholder="Ex: 30" />
+
+    <button onclick="calcularLucro()">Calcular Lucro</button>
+
+    <div class="result" id="resultado"></div>
+
+    <footer>
+      <a href="https://t.me/+d0GXPig0sJNjZDJh" target="_blank" class="telegram">Entrar no Canal do Telegram</a>
+      <p>Use com responsabilidade. Proibido para menores de 18 anos.</p>
+    </footer>
+  </div>
+
+  <script>
+    function calcularLucro() {
+      const bancaInicial = parseFloat(document.getElementById('banca').value);
+      const estrategia = parseFloat(document.getElementById('estrategia').value);
+      const dias = parseInt(document.getElementById('dias').value);
+      const resultado = document.getElementById('resultado');
+
+      if (isNaN(bancaInicial) || isNaN(estrategia) || isNaN(dias)) {
+        resultado.innerHTML = '<strong>Preencha todos os campos corretamente.</strong>';
+        return;
+      }
+
+      let bancaAtual = bancaInicial;
+      let log = `<strong>Banca inicial:</strong> R$ ${bancaInicial.toFixed(2)}<br><br>`;
+
+      for (let i = 1; i <= dias; i++) {
+        const lucroDia = bancaAtual * estrategia;
+        bancaAtual += lucroDia;
+        log += `Dia ${i}: +R$ ${lucroDia.toFixed(2)} (Total: R$ ${bancaAtual.toFixed(2)})<br>`;
+      }
+
+      resultado.innerHTML = log;
+    }
+  </script>
+</body>
+</html>
